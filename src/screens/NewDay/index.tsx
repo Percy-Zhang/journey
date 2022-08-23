@@ -1,20 +1,21 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useContext, useEffect } from 'react';
-import { Alert, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView as KbAwareScroll } from 'react-native-keyboard-aware-scroll-view'
 
 import { NewDayScreenNavigationProps } from '../../types/NativeStackParamsList';
 
-import { writeAsyncStorage } from '../../helpers';
+import { getDayOfDate } from '../../helpers';
 import MyContext, { theme, months } from '../../components/MyContext';
 import Header from '../../components/Header';
 import Star from './Star';
+import { getTodayDateInfo, getSavedEntry, saveEntry } from './functions';
 
 
 const styles = StyleSheet.create({
 	container: {
-	  flex: 1,
-	  backgroundColor: theme.primaryLighter,
+		flex: 1,
+		backgroundColor: theme.primaryLighter,
 	},
 	textContainer: {
 		padding: 20,
@@ -53,52 +54,32 @@ const styles = StyleSheet.create({
 export default function NewDay() {
 	const navigation = useNavigation<NewDayScreenNavigationProps>()
 	const { journal, setJournal } = useContext(MyContext)
+
+	let savedEntry = getSavedEntry(journal)
+	const { month, date, day } = getTodayDateInfo()
+
+	const [title, setTitle] = useState(savedEntry.title)
+	const [body, setBody] = useState(savedEntry.body)
+	const [important, setImportant] = useState(savedEntry.important)
 	
-	const dateObject = new Date()
-	const year = dateObject.getFullYear()
-	const month = dateObject.getMonth() + 1
-	const date = dateObject.getDate()
-	const savedEntry = journal[year][month][date]
+	const currentEntry: Entry = { title, body, important }
 
-	const [title, setTitle] = useState(savedEntry?.title)
-	const [body, setBody] = useState(savedEntry?.body)
-	const [important, setImportant] = useState(savedEntry?.important ?? false)
-
-	const saveEntry = async () => {
-		const toBeSaved : Entry = {title, body, important}
-		const keys = Object.keys(toBeSaved) as Array<keyof Entry>
-		for (let key of keys) {
-			const value = toBeSaved[key]
-			if (value === '' || value == undefined) return Alert.alert('Blank', `The ${key} is empty.`)
-		}
-		const journalCopy = JSON.parse(JSON.stringify(journal))
-		if (journalCopy[year] != undefined && journalCopy[year][month] != undefined) journalCopy[year][month][date] = toBeSaved
-		if (journalCopy[year] == undefined) journalCopy[year] = {}
-		if (journalCopy[year][month] == undefined) journalCopy[year][month] = {}
-		if (journalCopy[year][month][date] == undefined) journalCopy[year][month][date] = toBeSaved
-		setJournal(journalCopy)
-		await writeAsyncStorage('journal', JSON.stringify(journalCopy))
-		navigation.goBack()
-	}
-
+	const handleSave = () => saveEntry(currentEntry, journal, setJournal, navigation)
 	const toggleImportant = () => setImportant(bool => !bool)
-	
-	const showStar = () => (
-		Star(important, toggleImportant)
-	)
+	const showStar = () => Star(important, toggleImportant)
 
- 	return (
+	return (
 		<View style={styles.container}>
 			<StatusBar backgroundColor={theme.primaryDark} barStyle={'dark-content'} animated />
-			<Header title={`${date} ${months[month - 1]} ${year}`} rightIcon={showStar}/>
+			<Header title={`${day} ${date} ${months[month - 1]}`} rightIcon={showStar} />
 			<KbAwareScroll style={styles.textContainer}>
 				<TextInput style={styles.title} value={title} onChangeText={setTitle} placeholder={'Title'} />
-				<TextInput multiline style={styles.body} value={body} onChangeText={setBody} placeholder={'Write...'}/>
+				<TextInput multiline style={styles.body} value={body} onChangeText={setBody} placeholder={'Write...'} />
 				<View style={styles.footer} />
 			</KbAwareScroll>
-			<TouchableOpacity style={styles.addBox} onPress={saveEntry}>
+			<TouchableOpacity style={styles.addBox} onPress={handleSave}>
 				<Text style={styles.addText}>Save</Text>
 			</TouchableOpacity>
 		</View>
-  	)
+	)
 };
