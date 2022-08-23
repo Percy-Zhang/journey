@@ -78,3 +78,18 @@ export function isJournal(journalString : string) {
 export function getDayOfDate(date : Date) {
 	return days[date.getDay()]
 }
+
+export function getSavedEntry(journal: Journal, entryDate: Date) {
+    const year = entryDate.getFullYear()
+    const month = entryDate.getMonth() + 1
+    const date = entryDate.getDate()
+	
+	const emptyTemplate = { title: '', body: '', important: false }
+
+    try {
+		const entry = journal[year][month][date] ?? emptyTemplate
+        return entry
+    } catch (e) {
+        return emptyTemplate
+    }
+}

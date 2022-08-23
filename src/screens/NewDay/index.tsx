@@ -5,11 +5,11 @@ import { KeyboardAwareScrollView as KbAwareScroll } from 'react-native-keyboard-
 
 import { NewDayScreenNavigationProps } from '../../types/NativeStackParamsList';
 
-import { getDayOfDate } from '../../helpers';
+import { getDayOfDate, getSavedEntry } from '../../helpers';
 import MyContext, { theme, months } from '../../components/MyContext';
 import Header from '../../components/Header';
 import Star from './Star';
-import { getTodayDateInfo, getSavedEntry, saveEntry } from './functions';
+import { getTodayDateInfo, saveEntry } from './functions';
 
 
 const styles = StyleSheet.create({
@@ -55,7 +55,7 @@ export default function NewDay() {
 	const navigation = useNavigation<NewDayScreenNavigationProps>()
 	const { journal, setJournal } = useContext(MyContext)
 
-	let savedEntry = getSavedEntry(journal)
+	let savedEntry = getSavedEntry(journal, new Date())
 	const { month, date, day } = getTodayDateInfo()
 
 	const [title, setTitle] = useState(savedEntry.title)

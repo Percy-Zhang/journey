@@ -4,7 +4,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { months, theme } from '../../components/MyContext';
 import { YearScreenNavigationProps } from '../../types/NativeStackParamsList';
-import { getDayOfDate } from '../../helpers';
+import { getDayOfDate, getSavedEntry } from '../../helpers';
 
 const styles = StyleSheet.create({
 	dayContainer: {
@@ -37,15 +37,18 @@ export default function RandomCard(journal: Journal) {
 	const navigation = useNavigation<YearScreenNavigationProps>()
 	const [date, setDate] = useState(getRandomDate(journal))
 	const { year, month, day } = date
-	const { title, body, important } = journal[year][month][day]
 	
 	useFocusEffect(useCallback(() => {
-		 setDate(getRandomDate(journal))
-	}, []))
+		setDate(getRandomDate(journal))
+	}, [journal]))
 
 	const shortMonth = months[parseInt(month) - 1].slice(0, 3)
-	const dayOfWeek = getDayOfDate(new Date(`${day}-${shortMonth}-${year}`)).slice(0, 3)
+	const randomDate = new Date(`${day}-${shortMonth}-${year}`)
+	const { title, body, important } = getSavedEntry(journal, randomDate)
+	
 	const importantColor = important ? {backgroundColor: theme.primaryDark} : {}
+	const dayOfWeek = getDayOfDate(randomDate).slice(0, 3)
+	
 
 	const onPress = () => {
 		const date = new Date().getDate().toString()

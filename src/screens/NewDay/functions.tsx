@@ -11,15 +11,6 @@ export function getTodayDateInfo() {
     return { year, month, date, day }
 }
 
-export function getSavedEntry(journal: Journal): Entry {
-    try {
-        const { year, month, date } = getTodayDateInfo()
-        return journal[year][month][date]
-    } catch (e) {
-        return { title: '', body: '', important: false }
-    }
-}
-
 export async function saveEntry(
     currentEntry: Entry,
     journal: Journal,

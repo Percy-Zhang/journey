@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: theme.primaryLighter,
-  	},
+	},
 	footer: {
 		height: 10,
 	},
@@ -51,38 +51,38 @@ export default function Home() {
 
 	const onPress = () => navigation.navigate('NewDay')
 
-	const journalEmpty = Object.keys(journal).length == 0 
+	const journalEmpty = Object.keys(journal).length == 0
 	const showRecentCard = () => RecentCard(journal)
 	const showRandomCard = () => RandomCard(journal)
 	const showYearCard = () => Object.keys(journal).map((year) => YearCard(year, journal))
 
 	const showSettings = () => SettingsIcon(navigation)
 
- 	return (
+	return (
 		<View style={styles.container}>
 			<StatusBar backgroundColor={theme.primaryDark} barStyle={'dark-content'} animated />
-			<Header title={'Journey'} home rightIcon={showSettings}/>
+			<Header title={'Journey'} home rightIcon={showSettings} />
 			{journalEmpty
-			?
+				?
 				<View style={styles.emptyContainer}>
 					<Text style={styles.emptyText}>
 						Write your first entry
 					</Text>
 					<View />
 				</View>
-			:
+				:
 				<ScrollView>
 					{showRecentCard()}
 					{showRandomCard()}
 					{showYearCard()}
-					<View style={styles.footer}/>
-				</ScrollView> 
+					<View style={styles.footer} />
+				</ScrollView>
 			}
 			<TouchableOpacity style={styles.addBox} onPress={onPress}>
 				<Text style={styles.addText}>+</Text>
 			</TouchableOpacity>
 		</View>
-  	)
+	)
 };
 
 const styles2 = StyleSheet.create({
