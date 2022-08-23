@@ -31,13 +31,15 @@ export async function importJournal(setJournal : Dispatch<SetStateAction<Journal
 		return console.log(e, '[e314]')
 	}
 
-	const unValidatedJournal : Journal = JSON.parse(decryptedContent)
-	if (isJournal(unValidatedJournal)) {
-		const validJournal = unValidatedJournal
+	const validJournal : boolean = isJournal(decryptedContent)
+
+	if (validJournal) {
+		console.log('isValid')
+		const journal = JSON.parse(decryptedContent)
 
 		const onSuccess = async () => {
-			setJournal(validJournal)
-			await writeAsyncStorage('journal', JSON.stringify(validJournal))
+			setJournal(journal)
+			await writeAsyncStorage('journal', JSON.stringify(journal))
 			alertSuccess(navigation.popToTop)
 		}
 		const onConfirm = () => navigation.navigate('VerifyPin', { onSuccess })

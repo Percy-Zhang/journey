@@ -4,11 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 
 import { DayScreenNavigationProps } from '../../types/NativeStackParamsList';
 
-import { months, theme } from '../../components/MyContext';
+import { months, days, theme } from '../../components/MyContext';
+import { getDayOfDate } from '../../helpers';
 
 
 const styles = StyleSheet.create({
-  	dayContainer: {
+	dayContainer: {
 		marginHorizontal: 20,
 		marginTop: 20,
 		padding: 10,
@@ -16,10 +17,10 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		backgroundColor: theme.secondary,
 		elevation: 5,
-  	},
-  	dayText: {
+	},
+	dayText: {
 		fontSize: 20,
-	  	fontWeight: 'bold',
+		fontWeight: 'bold',
 	},
 	title: {
 		fontSize: 16,
@@ -31,19 +32,20 @@ export default function DayCard(day: string, month: string, year: string, journa
 	const navigation = useNavigation<DayScreenNavigationProps>()
 
 	const onPress = () => {
-		const date = new Date().getDate().toString()
-		if (day == date) navigation.navigate('NewDay')
-		else navigation.navigate('Day', {day, month, year})
+		const todayDate = new Date().getDate().toString()
+		if (day == todayDate) navigation.navigate('NewDay')
+		else navigation.navigate('Day', { day, month, year })
 	}
 
 	const { title, body, important } = journal[year][month][day]
 	const shortMonth = months[parseInt(month) - 1].slice(0, 3)
-	const importantColor = important ? {backgroundColor: theme.primaryDark} : {}
+	const dayOfWeek = getDayOfDate(new Date(`${day}-${shortMonth}-${year}`)).slice(0, 3)
+	const importantColor = important ? { backgroundColor: theme.primaryDark } : {}
 
 	return (
 		<TouchableOpacity key={day} onPress={onPress} style={[styles.dayContainer, importantColor]}>
 			<Text style={styles.dayText}>
-				{shortMonth} {day} {important && `\u2605`}
+				{shortMonth} {day} {dayOfWeek} {important && `\u2605`}
 			</Text>
 			<Text style={styles.title}>
 				{title}

@@ -79,7 +79,7 @@ export default function Pin() {
 			<Text style={styles.h1}>Journey</Text>
 			{correctPin == null && <Text style={styles.h2}>Create new PIN</Text>}
 			<Keypad pin={pin} setPin={setPin} styles={styles.keypad} />
-			<Text style={styles.version}>v1.0</Text>
+			<Text style={styles.version}>v1.0.1</Text>
 		</View>
 	) : (
 		<View style={styles.container} />

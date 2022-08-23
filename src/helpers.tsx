@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { days } from './components/MyContext'
 
 type Name = 'journal' | 'pin'
 
@@ -56,8 +57,9 @@ export function decrypt(encryptedText : string) : string {
 	return plainText
 }
 
-export function isJournal(journal : Journal) {
+export function isJournal(journalString : string) {
 	try {
+		const journal : Journal = JSON.parse(journalString)
 		for (let year in journal) {
 			for (let month in journal[year]) {
 				for (let day in journal[year][month]) {
@@ -70,5 +72,9 @@ export function isJournal(journal : Journal) {
 			}
 		}
 		return true
-	} catch (e) {return false}
+	} catch (e) {console.log(e);return false}
+}
+
+export function getDayOfDate(date : Date) {
+	return days[date.getDay()]
 }

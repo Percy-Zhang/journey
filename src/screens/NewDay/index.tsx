@@ -62,13 +62,14 @@ export default function NewDay() {
 
 	const [title, setTitle] = useState(savedEntry?.title)
 	const [body, setBody] = useState(savedEntry?.body)
-	const [important, setImportant] = useState(savedEntry?.important)
+	const [important, setImportant] = useState(savedEntry?.important ?? false)
 
 	const saveEntry = async () => {
 		const toBeSaved : Entry = {title, body, important}
 		const keys = Object.keys(toBeSaved) as Array<keyof Entry>
 		for (let key of keys) {
-			if (toBeSaved[key] === '') return Alert.alert('Blank', `The ${key} is empty.`)
+			const value = toBeSaved[key]
+			if (value === '' || value == undefined) return Alert.alert('Blank', `The ${key} is empty.`)
 		}
 		const journalCopy = JSON.parse(JSON.stringify(journal))
 		if (journalCopy[year] != undefined && journalCopy[year][month] != undefined) journalCopy[year][month][date] = toBeSaved

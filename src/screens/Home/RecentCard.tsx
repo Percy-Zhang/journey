@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { months, theme } from '../../components/MyContext';
 import { YearScreenNavigationProps } from '../../types/NativeStackParamsList';
+import { getDayOfDate } from '../../helpers';
 
 const styles = StyleSheet.create({
 	dayContainer: {
@@ -39,6 +40,7 @@ export default function RecentCard(journal: Journal) {
 	const { title, body, important } = journal[year][month][day]
 
 	const shortMonth = months[parseInt(month) - 1].slice(0, 3)
+	const dayOfWeek = getDayOfDate(new Date(`${day}-${shortMonth}-${year}`)).slice(0, 3)
 	const importantColor = important ? {backgroundColor: theme.primaryDark} : {}
 
 	const onPress = () => {
@@ -53,7 +55,7 @@ export default function RecentCard(journal: Journal) {
 				Recent
 			</Text>
 			<Text style={styles.dayText}>
-				{shortMonth} {day} {important && `\u2605`}
+				{shortMonth} {day} {dayOfWeek} {important && `\u2605`}
 			</Text>
 			<Text style={styles.title}>
 				{title}
