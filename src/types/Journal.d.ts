@@ -1,13 +1,13 @@
 interface Journal {
-	[year: string]: {
-		[month: string]: {
-			[day: string]: Entry
-		}
-	}
+  [year: string]: {
+    [month: string]: {
+      [day: string]: Entry;
+    };
+  };
 }
 
 interface Entry {
-	title: string
-	body: string
-	important: boolean
+  title: string;
+  body: string;
+  important: boolean;
 }
