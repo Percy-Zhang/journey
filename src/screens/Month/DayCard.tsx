@@ -32,7 +32,10 @@ export default function DayCard(day: string, month: string, year: string, journa
 
   const onPress = () => {
     const todayDate = new Date().getDate().toString();
-    if (day === todayDate) navigation.navigate("NewDay");
+    const todayMonth = (new Date().getMonth() + 1).toString();
+    const todayYear = new Date().getFullYear().toString();
+    const sameDate = day === todayDate && month === todayMonth && year === todayYear;
+    if (sameDate) navigation.navigate("NewDay");
     else navigation.navigate("Day", { day, month, year });
   };
 
